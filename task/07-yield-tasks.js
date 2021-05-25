@@ -32,8 +32,19 @@
  * @return {Iterable.<string>}
  *
  */
-function* get99BottlesOfBeer() {
-    throw new Error('Not implemented');
+
+ function* get99BottlesOfBeer() {
+	for(let i = 99; i > 2 ; ) {
+    	yield `${i} bottles of beer on the wall, ${i} bottles of beer.`;
+    	yield `Take one down and pass it around, ${--i} bottles of beer on the wall.`;
+	}
+
+	yield `2 bottles of beer on the wall, 2 bottles of beer.`;
+    yield `Take one down and pass it around, 1 bottle of beer on the wall.`;
+	yield '1 bottle of beer on the wall, 1 bottle of beer.';
+	yield 'Take one down and pass it around, no more bottles of beer on the wall.';
+	yield 'No more bottles of beer on the wall, no more bottles of beer.';
+	yield 'Go to the store and buy some more, 99 bottles of beer on the wall.';
 }
 
 
@@ -47,7 +58,15 @@ function* get99BottlesOfBeer() {
  *
  */
 function* getFibonacciSequence() {
-    throw new Error('Not implemented');
+    //throw new Error('Not implemented');
+    var add = 1;
+	var result = 0;
+	while(true) {
+    	yield result;
+    	var newAdd = result;
+    	result += add;
+    	add = newAdd;
+	}
 }
 
 
@@ -82,7 +101,22 @@ function* getFibonacciSequence() {
  *
  */
 function* depthTraversalTree(root) {
-    throw new Error('Not implemented');
+	let stack = [root]; 
+ 
+	function childrenToStack(children) { 
+		if(!children)  
+			return 
+		var i = children.length; 
+		while(i) { 
+			stack.push(children[--i]); 
+		} 
+	} 
+ 
+	while ( stack.length ) { 
+		let n = stack.pop(); 
+		childrenToStack(n.children); 
+		yield n; 
+	} 
 }
 
 
@@ -108,7 +142,15 @@ function* depthTraversalTree(root) {
  *
  */
 function* breadthTraversalTree(root) {
-    throw new Error('Not implemented');
+	let queue = [root]; 
+ 
+	while ( queue.length ) { 
+		let n = queue.shift(); 
+		if(n.children) { 
+			n.children.forEach(x => queue.push(x)); 
+		} 
+		yield n; 
+	} 
 }
 
 
@@ -126,7 +168,36 @@ function* breadthTraversalTree(root) {
  *   [ 1, 3, 5, ... ], [ -1 ] => [ -1, 1, 3, 5, ...]
  */
 function* mergeSortedSequences(source1, source2) {
-    throw new Error('Not implemented');
+	var s1 = source1();
+	var s2 = source2();
+
+	let v1 = s1.next();
+	let v2 = s2.next();
+
+	do {
+		let result;
+		if(v1.value < v2.value) {
+			result = v1;
+			v1 = s1.next();
+		} else {
+			result = v2;
+			v2 = s2.next();
+		} 
+			yield result.value;
+	} while(!v1.done && !v2.done);
+
+	let next;
+	if(v1.done) {
+		yield v2.value;
+		next = () => s2.next().value;
+	} else {
+		yield v1.value;
+		next = () => s1.next().value;
+	}
+
+	while(true) { 
+		yield next();
+	}
 }
 
 
